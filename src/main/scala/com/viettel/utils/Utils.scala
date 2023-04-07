@@ -1,7 +1,7 @@
 package com.viettel.utils
 
 import org.apache.hadoop.hbase.TableName
-import org.apache.hadoop.hbase.client.{Connection, Scan, Table}
+import org.apache.hadoop.hbase.client.{Connection, Result, Scan, Table}
 
 /**
  * @author anhnsq@viettel.com.vn
@@ -11,14 +11,16 @@ object Utils {
     connection.getTable(TableName.valueOf(tableName))
   }
 
-  def getAll[T](connection: Connection, tableName: Array[Byte], columnFamily: Array[Byte]): List[T] = {
+  def getAll[T](connection: Connection, tableName: Array[Byte], columnFamily: Array[Byte], constructor: Result => T): List[T] = {
     val table = getHbaseTbl(connection, tableName)
+
     val sc = new Scan
     sc.addFamily(columnFamily)
-    val list = table.getScanner(sc)
+    val results = table.getScanner(sc)
+
     val builder = List.newBuilder[T]
-    list.forEach(elem => {
-      builder += elem
+    results.forEach(elem => {
+      builder += constructor(elem)
     })
     val rs = builder.result()
     table.close()

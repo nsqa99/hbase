@@ -10,7 +10,8 @@ import org.apache.log4j.LogManager
 /**
  * @author anhnsq@viettel.com.vn
  */
-class UserDAO(connection: Connection) extends AbstractDAO[User] {
+class UserDAO(connection: Connection) extends BaseDAO[User] {
+
   import com.viettel.model.User._
 
   private val log = LogManager.getLogger(classOf[UserDAO])
@@ -36,7 +37,7 @@ class UserDAO(connection: Connection) extends AbstractDAO[User] {
   }
 
   override def getAll(user: User): List[User] = {
-    Utils.getAll[User](connection = connection, tableName = TABLE_NAME, columnFamily = INFO_FAM)
+    Utils.getAll[User](connection = connection, tableName = TABLE_NAME, columnFamily = INFO_FAM, constructor = User.of)
   }
 
   override def addOne(user: User): Unit = {

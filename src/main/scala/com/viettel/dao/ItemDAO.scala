@@ -11,7 +11,7 @@ import org.apache.log4j.LogManager
 /**
  * @author anhnsq@viettel.com.vn
  */
-class ItemDAO(connection: Connection) extends AbstractDAO[Item] {
+class ItemDAO(connection: Connection) extends BaseDAO[Item] {
   private val log = LogManager.getLogger(classOf[ItemDAO])
 
   override def getOne(item: Item): Item = {
@@ -31,7 +31,7 @@ class ItemDAO(connection: Connection) extends AbstractDAO[Item] {
   }
 
   override def getAll(item: Item): List[Item] = {
-    Utils.getAll(connection = connection, tableName = TABLE_NAME, columnFamily = ITEM_INFO_FAM)
+    Utils.getAll(connection = connection, tableName = TABLE_NAME, columnFamily = ITEM_INFO_FAM, constructor = Item.of)
   }
 
   override def addOne(item: Item): Unit = {

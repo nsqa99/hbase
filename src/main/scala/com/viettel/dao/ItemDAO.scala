@@ -2,6 +2,7 @@ package com.viettel.dao
 
 import com.viettel.model.Item
 import com.viettel.model.Item._
+import com.viettel.utils.Utils
 import com.viettel.utils.Utils._
 import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.Bytes
@@ -30,19 +31,7 @@ class ItemDAO(connection: Connection) extends AbstractDAO[Item] {
   }
 
   override def getAll(item: Item): List[Item] = {
-    val itemTbl = getHbaseTbl(connection, TABLE_NAME)
-
-    val sc = new Scan
-    sc.addFamily(ITEM_INFO_FAM)
-    val items = itemTbl.getScanner(sc)
-    val builder = List.newBuilder[Item]
-    items.forEach(item => {
-      builder += item
-    })
-    val rs = builder.result()
-    itemTbl.close()
-
-    rs
+    Utils.getAll(connection = connection, tableName = TABLE_NAME, columnFamily = ITEM_INFO_FAM)
   }
 
   override def addOne(item: Item): Unit = {

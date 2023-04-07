@@ -1,8 +1,9 @@
 package com.viettel.dao
 
 import com.viettel.model.User
+import com.viettel.utils.Utils
 import org.apache.hadoop.hbase.TableName
-import org.apache.hadoop.hbase.client.{Connection, Delete, Get, Put, Scan, Table}
+import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.log4j.LogManager
 
@@ -35,19 +36,7 @@ class UserDAO(connection: Connection) extends AbstractDAO[User] {
   }
 
   override def getAll(user: User): List[User] = {
-    val userTbl = getHbaseTbl(connection, TABLE_NAME)
-
-    val sc = new Scan
-    sc.addFamily(INFO_FAM)
-    val users = userTbl.getScanner(sc)
-    val builder = List.newBuilder[User]
-    users.forEach(user => {
-      builder += user
-    })
-    val rs = builder.result()
-    userTbl.close()
-
-    rs
+    Utils.getAll[User](connection = connection, tableName = TABLE_NAME, columnFamily = INFO_FAM)
   }
 
   override def addOne(user: User): Unit = {

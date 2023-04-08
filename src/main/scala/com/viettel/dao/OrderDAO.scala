@@ -26,17 +26,13 @@ class OrderDAO(connection: Connection) extends BaseDAO[Order] {
   }
 
   override def addOne(order: Order): Unit = {
-    // require create column family before execute this
     val orderTbl = getHbaseTbl(connection, TABLE_NAME)
 
     val p = new Put(Order.hbaseRowKey(order))
     p.addColumn(INFO_FAM, ORDER_ID_COL, Bytes.toBytes(order.orderId))
     p.addColumn(INFO_FAM, ORDER_TOTAL_COL, Bytes.toBytes(order.total))
     p.addColumn(INFO_FAM, ORDER_CREATED_TIME_COL, Bytes.toBytes(order.createdTime))
-    order.orderItems.foreach(orderItem => {
-      p.addColumn(Bytes.toBytes(s"${orderItem.itemId}_item"), Bytes.toBytes(orderItem.amount),
-        Bytes.toBytes(orderItem.price * orderItem.amount))
-    })
+
     orderTbl.put(p)
     log.debug(s"Added order ${order.orderId} of user ${order.username}")
 
@@ -68,7 +64,6 @@ class OrderDAO(connection: Connection) extends BaseDAO[Order] {
       listBuilder += Order.of(rs)
     })
     val rs = listBuilder.result()
-    // get order items by order ids
 
     orderTbl.close()
     rs

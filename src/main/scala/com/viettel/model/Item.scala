@@ -26,6 +26,10 @@ object Item extends HBaseCommonUtils[Item] {
     new Item(Bytes.toLong(itemId), Bytes.toString(itemName), Bytes.toDouble(itemPrice))
   }
 
+  def of(itemId: Long, name: String, price: Double): Item = {
+    new Item(itemId, name, price)
+  }
+
   override def hbaseRowKey(item: Item): Array[Byte] = {
     Bytes.toBytes(item.itemId)
   }

@@ -1,8 +1,7 @@
 package com.viettel.dao
 
-import com.viettel.model.Item.TABLE_NAME
 import com.viettel.model.OrderItem
-import com.viettel.model.OrderItem.{AMOUNT_COL, ITEM_INFO, NAME_COL, PRICE_COL}
+import com.viettel.model.OrderItem.{AMOUNT_COL, ITEM_INFO, NAME_COL, PRICE_COL, TABLE_NAME}
 import com.viettel.utils.Utils
 import com.viettel.utils.Utils.getHbaseTbl
 import org.apache.hadoop.hbase.client.{Connection, Delete, Get, Put, Scan}
@@ -64,7 +63,7 @@ class OrderItemDAO(connection: Connection) extends BaseDAO[OrderItem] {
     val sc = new Scan
     val filterList = new FilterList(FilterList.Operator.MUST_PASS_ONE)
     orderIds.foreach(orderId => {
-      filterList.addFilter(new PrefixFilter(Bytes.toBytes(orderId)))
+      filterList.addFilter(new PrefixFilter(Bytes.toBytes(String.valueOf(orderId))))
     })
     sc.setFilter(filterList)
     val results = ordItemTbl.getScanner(sc)
@@ -76,18 +75,16 @@ class OrderItemDAO(connection: Connection) extends BaseDAO[OrderItem] {
     ordItemTbl.close()
 
     val orderItemMap = mutable.Map.empty[Long, ArrayBuffer[OrderItem]]
-
-    rs.map(orderItem => {
-      val orderId = orderItem.orderId
-      val listOpt = orderItemMap.get(orderId)
-      listOpt match {
-        case None =>
-          orderItemMap += (orderId -> ArrayBuffer(orderItem))
-        case Some(list) =>
-          list += orderItem
-      }
-    })
+    rs.foreach(orderItem => updateMap(orderItemMap, orderItem.orderId, orderItem))
 
     orderItemMap
+  }
+
+  private def updateMap(map: mutable.Map[Long, ArrayBuffer[OrderItem]], key: Long, value: OrderItem): Unit = {
+    if (!map.contains(key)) {
+      map += (key -> ArrayBuffer(value))
+    } else {
+      map(key) += value
+    }
   }
 }

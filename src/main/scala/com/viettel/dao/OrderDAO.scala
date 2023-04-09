@@ -4,7 +4,7 @@ import com.viettel.model.Order
 import com.viettel.model.Order.{INFO_FAM, ORDER_CREATED_TIME_COL, ORDER_ID_COL, ORDER_TOTAL_COL, TABLE_NAME}
 import com.viettel.utils.Utils
 import com.viettel.utils.Utils.getHbaseTbl
-import org.apache.hadoop.hbase.client.{Connection, Delete, Get, Put, Scan}
+import org.apache.hadoop.hbase.client.{Connection, Delete, Get, Put, Result, Scan}
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.log4j.LogManager
 
@@ -52,11 +52,10 @@ class OrderDAO(connection: Connection) extends BaseDAO[Order] {
     val orderTbl = getHbaseTbl(connection, TABLE_NAME)
 
     val startRow = Bytes.toBytes(s"$username+$startTime")
-    val stopRow = Bytes.toBytes(s"$username+${endTime}")
+    val stopRow = Bytes.toBytes(s"$username+$endTime")
     val sc = new Scan()
       .withStartRow(startRow)
       .withStopRow(stopRow, true)
-    sc.setRowPrefixFilter(Bytes.toBytes(username))
 
     val orderResults = orderTbl.getScanner(sc)
     val listBuilder = List.newBuilder[Order]

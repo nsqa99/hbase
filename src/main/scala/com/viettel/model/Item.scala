@@ -8,7 +8,9 @@ import org.apache.hadoop.hbase.util.Bytes
  * @author anhnsq@viettel.com.vn
  */
 class Item private (var itemId: Long, var name: String, var price: Double) {
-
+  override def toString: String = {
+    s"Item: {id=$itemId, name=$name, price=$price}"
+  }
 }
 
 object Item extends HBaseCommonUtils[Item] {
@@ -28,6 +30,14 @@ object Item extends HBaseCommonUtils[Item] {
 
   def of(itemId: Long, name: String, price: Double): Item = {
     new Item(itemId, name, price)
+  }
+
+  def of(lineData: Array[String]): Item = {
+    new Item(itemId = lineData(0).toLong, name = lineData(1), price = lineData(2).toDouble)
+  }
+
+  def of(itemId: Long): Item = {
+    new Item(itemId, "", 0)
   }
 
   override def hbaseRowKey(item: Item): Array[Byte] = {

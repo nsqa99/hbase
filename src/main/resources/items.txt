@@ -1,0 +1,9 @@
+1|Kem danh rang|12
+2|Ban chai|29.99
+3|Sua rua mat|59.99
+4|Dau an Simply|159.99
+5|Dau olive|399.99
+6|Ca hoi hoang|69.99
+7|Thit voi|599.99
+8|Sung te giac|1799.99
+9|Sung ban keo|129.99

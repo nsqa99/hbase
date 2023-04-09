@@ -12,8 +12,8 @@ object HBaseConnectionConf {
   def getConnection: Connection = {
     val config: Configuration = HBaseConfiguration.create()
     //Add any necessary configuration files (hbase-site.xml, core-site.xml)
-    config.addResource(new Path("/home/anhnsq/apps/hbase-2.4.16/hbase-site.xml"))
-    config.addResource(new Path("/home/anhnsq/apps/hadoop-3.3.3/core-site.xml"))
+    config.addResource(new Path("/home/nsqa/apps/hbase-2.4.17/conf/hbase-site.xml"))
+    config.addResource(new Path("/home/nsqa/apps/hadoop-3.3.3/etc/hadoop/core-site.xml"))
     ConnectionFactory.createConnection(config)
   }
 }

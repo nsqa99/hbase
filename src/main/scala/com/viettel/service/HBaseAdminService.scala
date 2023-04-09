@@ -7,5 +7,5 @@ import org.apache.hadoop.hbase.TableName
  */
 trait HBaseAdminService {
   def createTable(tableName: TableName, columnFamilies: Array[Byte]*): Unit
-  def addColumnFamily(tableName: TableName, columnFamily: Array[Byte])
+  def addColumnFamily(tableName: TableName, columnFamily: Array[Byte]): Unit
 }

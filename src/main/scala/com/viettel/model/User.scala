@@ -9,6 +9,9 @@ import org.apache.hadoop.hbase.util.Bytes
  * @author anhnsq@viettel.com.vn
  */
 class User private (var username: String, var fullName: String, var city: String, var age: Int) {
+  override def toString: String = {
+    s"User: [username=$username, fullName=$fullName, city=$city, age=$age]"
+  }
 }
 
 object User extends HBaseCommonUtils[User] {
@@ -26,6 +29,14 @@ object User extends HBaseCommonUtils[User] {
     val age = rs.getValue(INFO_FAM, AGE_COL)
 
     new User(Bytes.toString(username), Bytes.toString(fullName), Bytes.toString(city), Bytes.toInt(age))
+  }
+
+  def of(username: String, fullName: String, city: String, age: Int): User = {
+    new User(username, fullName, city, age)
+  }
+
+  def of(lineData: Array[String]): User = {
+    new User(username = lineData(0), fullName = lineData(1), city = lineData(2), age = lineData(3).toInt)
   }
 
   override def hbaseRowKey(user: User): Array[Byte] = {

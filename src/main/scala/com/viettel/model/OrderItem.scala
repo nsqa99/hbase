@@ -7,7 +7,11 @@ import org.apache.hadoop.hbase.util.Bytes
 /**
  * @author anhnsq@viettel.com.vn
  */
-class OrderItem private (var orderId: Long, var amount: Int, var item: Item)
+class OrderItem private (var orderId: Long, var amount: Int, var item: Item) {
+  override def toString: String = {
+    s"Order Item: {orderId=$orderId, item=$item, amount=$amount}"
+  }
+}
 
 object OrderItem extends HBaseCommonUtils[OrderItem] {
   val TABLE_NAME: Array[Byte] = Bytes.toBytes("order_items")
@@ -29,5 +33,9 @@ object OrderItem extends HBaseCommonUtils[OrderItem] {
     val item = Item.of(keys(1).toLong, Bytes.toString(name), Bytes.toDouble(price))
 
     new OrderItem(orderId = keys(0).toLong, amount = Bytes.toInt(amount), item)
+  }
+
+  def of(lineData: Array[String]): OrderItem = {
+    new OrderItem(orderId = lineData(0).toLong, amount = lineData(1).toInt, Item.of(lineData(2).toLong))
   }
 }

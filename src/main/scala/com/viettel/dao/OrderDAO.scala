@@ -1,15 +1,15 @@
 package com.viettel.dao
 
 import com.viettel.model.Order
-import com.viettel.model.Order.{INFO_FAM, ORDER_CREATED_TIME_COL, ORDER_ID_COL, ORDER_TOTAL_COL, TABLE_NAME}
+import com.viettel.model.Order._
 import com.viettel.utils.Utils
 import com.viettel.utils.Utils.getHbaseTbl
-import org.apache.hadoop.hbase.client.{Connection, Delete, Get, Put, Result, Scan}
+import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.Bytes
-import org.apache.log4j.LogManager
+import org.slf4j.LoggerFactory
 
 class OrderDAO(connection: Connection) extends BaseDAO[Order] {
-  private val log = LogManager.getLogger(classOf[OrderDAO])
+  private val log = LoggerFactory.getLogger(classOf[OrderDAO])
 
   override def getOne(order: Order): Order = {
     val orderTbl = getHbaseTbl(connection, TABLE_NAME)

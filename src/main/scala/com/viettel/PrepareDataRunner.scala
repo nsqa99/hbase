@@ -2,14 +2,14 @@ package com.viettel
 
 import com.viettel.conf.HBaseConnectionConf
 import com.viettel.dao.{OrderDAO, OrderItemDAO, UserDAO}
-import com.viettel.service.{HBaseAdminServiceImpl, LoadService, OrderServiceImpl, UserServiceImpl}
-import org.apache.log4j.LogManager
+import com.viettel.service.{HBaseAdminServiceImpl, LoadServiceImpl, OrderServiceImpl, UserServiceImpl}
+import org.slf4j.LoggerFactory
 
 /**
  * @author anhnsq@viettel.com.vn
  */
 object PrepareDataRunner {
-  private val log = LogManager.getLogger("MainRunner")
+  private val log = LoggerFactory.getLogger("PrepareData")
 
   def main(args: Array[String]): Unit = {
     val hbaseConn = HBaseConnectionConf.getConnection
@@ -22,7 +22,7 @@ object PrepareDataRunner {
     val userService = new UserServiceImpl(userDAO, admin)
     val orderService = new OrderServiceImpl(orderDAO, orderItemDAO, admin)
 
-    val loadService = new LoadService
+    val loadService = new LoadServiceImpl
     val (listUsers, listOrders, listOrderItems) = loadService.loadDataFromFiles()
     log.info("Creating users table...")
     userService.createUserTable()
